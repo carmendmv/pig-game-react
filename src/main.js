@@ -56,17 +56,67 @@ const initData = () => {
   currentScore = 0;
   activePlayer = 0;
   //update DOM
-  score0.value = 0;
-  score1.value = 0;
-  currentScore0.value = 0;
-  currentScore1.value = 0;
-
-  sectionPlayer0.classList.remove("player--winner");
-  sectionPlayer1.classList.remove("player--winner");
-  sectionPlayer0.classList.add("player--active");
-  sectionPlayer1.classList.remove("player--active");
+  score0.textContent = 0;
+  score1.textContent = 0;
+  currentScore0.textContent = 0;
+  currentScore1.textContent = 0;
 
   dice.classList.add("hidden");
 };
 
 initData();
+
+//función para sacar dado aleatorio
+const throwDice = () => {
+  const random = Math.trunc(Math.random() * 6) + 1;
+  dice.classList.remove("hidden");
+  dice.src = `dice-${random}.png`;
+
+  if (random !== 1) {
+    updateCurrentScore(random);
+    if (currentScore >= 100) {
+      alert(`Player ${activePlayer + 1} loses!`);
+      initData();
+    }
+  } else {
+    changePlayer();
+    document.getElementById(`current--${activePlayer}`).textContent =
+      currentScore;
+  }
+};
+
+function updateCurrentScore(random) {
+  currentScore += random; // current = current + random
+  if (activePlayer === 0) currentScore0.textContent = currentScore;
+  else currentScore1.textContent = currentScore;
+}
+
+function changePlayer() {
+  //currentScore actualizada
+  resetCurrentScore();
+  //cambiamos de jugador activo
+  //si el jugador activo es el 0, se cambia al 1
+  //si el jugador activo es el 1, se cambia al 0
+  //uso el operador ternario que verifica si el valor
+  //de activePlayer es 0 o 1 y devuelve el valor contrario
+
+  sectionPlayer0.classList.toggle("player--active");
+  sectionPlayer1.classList.toggle("player--active");
+  activePlayer = activePlayer === 0 ? 1 : 0;
+  //la función toogle indica que clase poner en función de la condición
+}
+
+function resetCurrentScore() {
+  score[activePlayer] += currentScore;
+  document.getElementById(`score--${activePlayer}`).textContent =
+    score[activePlayer];
+  currentScore = 0;
+  if (activePlayer === 0) currentScore0.textContent = currentScore;
+  else currentScore1.textContent = currentScore;
+}
+
+//funcionalidad para los botones:
+
+btnRoll.addEventListener("click", throwDice);
+btnHold.addEventListener("click", changePlayer);
+btnNew.addEventListener("click", initData);
