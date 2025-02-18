@@ -12,15 +12,21 @@ function App() {
 
   // Función para reiniciar el juego
   const initData = () => {
+    // Restablecer las puntuaciones
     setScore([0, 0]);
     setCurrentScore([0, 0]);
     setActivePlayer(0);
     setGameOver(false);
     setDiceRoll(null);
+
+    document.querySelector(".player--0").classList.remove("player--winner");
+    document.querySelector(".player--1").classList.remove("player--winner");
   };
 
   // Función para tirar el dado
   const throwDice = () => {
+    if (gameOver) return;
+
     const random = Math.trunc(Math.random() * 6) + 1;
     setDiceRoll(random);
 
@@ -34,24 +40,41 @@ function App() {
       changePlayer();
     }
 
-    if (currentScore[activePlayer] + random >= 100) {
+    if (score[activePlayer] + currentScore[activePlayer] >= 100) {
       setGameOver(true);
-      alert(`Player ${activePlayer + 1} wins!`);
+      document
+        .querySelector(`.player--${activePlayer}`)
+        .classList.add("player--winner");
     }
   };
 
   // Función para cambiar de jugador
   const changePlayer = () => {
-    setCurrentScore([0, 0]);
+    updateScores();
     setActivePlayer(activePlayer === 0 ? 1 : 0);
   };
 
-  // Función para guardar la puntuación actual
+  // Función para acumular la puntuación actual en la puntuación total
+  const updateScores = () => {
+    setScore((prev) => {
+      const newScores = [...prev];
+      newScores[activePlayer] += currentScore[activePlayer]; // Añado la puntuación actual al total
+      return newScores;
+    });
+    setCurrentScore([0, 0]); // Reinicia la puntuación actual después de guardar
+  };
+
+  // Función para guardar la puntuación actual sin cambiar de jugador (al presionar "Hold")
   const holdScore = () => {
-    const newScores = [...score];
-    newScores[activePlayer] += currentScore[activePlayer];
-    setScore(newScores);
-    changePlayer();
+    updateScores();
+    if (score[activePlayer] + currentScore[activePlayer] >= 100) {
+      setGameOver(true); // Detiene el juego si la puntuación total llega a 100
+      document
+        .querySelector(`.player--${activePlayer}`)
+        .classList.add("player--winner"); // Marca al jugador como ganador
+    } else {
+      changePlayer(); // Cambia al siguiente jugador
+    }
   };
 
   return (
@@ -62,17 +85,18 @@ function App() {
         currentScore={currentScore[0]}
         isActive={activePlayer === 0}
       />
+
+      <img
+        src={`dice-${diceRoll || 5}.png`}
+        alt="Playing dice"
+        className={diceRoll ? "dice" : "hidden"}
+      />
+
       <Player
         playerId={1}
         score={score[1]}
         currentScore={currentScore[1]}
         isActive={activePlayer === 1}
-      />
-
-      <img
-        src={diceRoll ? `dice-${diceRoll}.png` : "dice-5.png"}
-        alt="Playing dice"
-        className={diceRoll ? "" : "hidden"}
       />
 
       <div>
@@ -86,8 +110,6 @@ function App() {
           📥 Hold
         </button>
       </div>
-
-      {gameOver && <div>Game Over!</div>}
     </main>
   );
 }

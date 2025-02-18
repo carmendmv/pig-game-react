@@ -19,5 +19,10 @@ function Player(props) {
     </section>
   );
 }
-
+// Player.propTypes = {
+//     playerId: PropTypes.string.isRequired
+//     score: PropTypes.string.isRequired
+//     currentScore: PropTypes.string.isRequired
+//     isActive: PropTypes.string.isRequired
+// }
 export default Player;
