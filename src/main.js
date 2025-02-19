@@ -62,6 +62,18 @@ const initData = () => {
   currentScore1.textContent = 0;
 
   dice.classList.add("hidden");
+
+  // Elimino la clase de ganador si existe
+  sectionPlayer0.classList.remove("player--winner");
+  sectionPlayer1.classList.remove("player--winner");
+
+  // Habilitar los botones de acción para poder reiniciar el juego
+  btnRoll.disabled = false;
+  btnHold.disabled = false;
+
+  // Hago que el jugador 1 (0) empiece jugando
+  sectionPlayer0.classList.add("player--active");
+  sectionPlayer1.classList.remove("player--active");
 };
 
 initData();
@@ -74,14 +86,19 @@ const throwDice = () => {
 
   if (random !== 1) {
     updateCurrentScore(random);
-    if (currentScore >= 100) {
-      alert(`Player ${activePlayer + 1} loses!`);
-      initData();
+    // Verifico si el jugador ha alcanzado 100 o más puntos
+    if (score[activePlayer] >= 100) {
+      // Agregar clase de ganador
+      document
+        .querySelector(`.player--${activePlayer}`)
+        .classList.add("player--winner");
+      // Deshabilitar los botones de acción
+      dice.classList.add("hidden");
+      btnRoll.disabled = true;
+      btnHold.disabled = true;
     }
   } else {
     changePlayer();
-    document.getElementById(`current--${activePlayer}`).textContent =
-      currentScore;
   }
 };
 
