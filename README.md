@@ -23,6 +23,6 @@ npm install
 
 ### Publicar el repo usando gh-pages
 
-
+https://carmendmv.github.io/pig-game/
 
 ##
