@@ -25,4 +25,7 @@ npm install
 
 https://carmendmv.github.io/pig-game/
 
-##
+# para publicar la página he utilizado los siguientes comenados en la terminar de VS Code
+
+1. `npm i -D gh-pages`
+2. `npm run deploy`
