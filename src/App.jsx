@@ -1,117 +1,98 @@
-import "./App.css";
-import { useState } from "react";
-import Player from "./Player";
+import { useState } from "react"; 
+import Player from "./Player"; 
+import "./App.css"; // Importamos el archivo CSS
 
-function App() {
-  // Estado de la aplicación
-  const [score, setScore] = useState([0, 0]);
-  const [currentScore, setCurrentScore] = useState([0, 0]);
-  const [activePlayer, setActivePlayer] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
-  const [diceRoll, setDiceRoll] = useState(null);
+// predefino la puntuación del ganador
+const WINNING_SCORE = 100;
 
-  // Función para reiniciar el juego
-  const initData = () => {
-    // Restablecer las puntuaciones
-    setScore([0, 0]);
-    setCurrentScore([0, 0]);
-    setActivePlayer(0);
-    setGameOver(false);
-    setDiceRoll(null);
-
-    document.querySelector(".player--0").classList.remove("player--winner");
-    document.querySelector(".player--1").classList.remove("player--winner");
-  };
+const App = () => {
+  // defino las variables de estado
+  const [scores, setScores] = useState([0, 0]); // Ppuntuaciones totales de los jugadores
+  const [currentScore, setCurrentScore] = useState(0); // la puntuación actual de cada turno
+  const [activePlayer, setActivePlayer] = useState(0); // Jquien es el jugador activo
+  const [isPlaying, setIsPlaying] = useState(true); // estado del juego
 
   // Función para tirar el dado
   const throwDice = () => {
-    if (gameOver) return;
+    if (!isPlaying) return; // si el juego ha terminado, no hace nada
 
-    const random = Math.trunc(Math.random() * 6) + 1;
-    setDiceRoll(random);
+    const random = Math.floor(Math.random() * 6) + 1; // genera un número aleatorio entre 1 y 6
 
-    if (random !== 1) {
-      setCurrentScore((prev) => {
-        const newScores = [...prev];
-        newScores[activePlayer] += random;
-        return newScores;
-      });
+    if (random === 1) {
+      // Si el dado es 1, el jugador pierde su puntuación actual
+      setCurrentScore(0);
+      changePlayer(); // Cambia de jugador
     } else {
-      changePlayer();
+      // Si no es 1, se acumula la puntuación
+      setCurrentScore((prevScore) => prevScore + random);
     }
+  };
 
-    if (score[activePlayer] + currentScore[activePlayer] >= 100) {
-      setGameOver(true);
-      document
-        .querySelector(`.player--${activePlayer}`)
-        .classList.add("player--winner");
+  // Función para "guardar" la puntuación actual y cambiar de turno
+  const holdScore = () => {
+    if (!isPlaying) return; // si el juego ha terminado, no se hace nada
+
+    // Agrega la puntuación actual al total del jugador activo
+    const newScores = [...scores];
+    newScores[activePlayer] += currentScore;
+    setScores(newScores); // Actualiza las puntuaciones totales
+
+    // Si el jugador alcanza o supera el puntaje ganador, se acaba el juego
+    if (newScores[activePlayer] >= WINNING_SCORE) {
+      alert(`Player ${activePlayer + 1} wins!`); // Muestra un mensaje de victoria
+      setIsPlaying(false); // Detiene el juego
+    } else {
+      // Cambia al siguiente jugador
+      changePlayer();
     }
   };
 
   // Función para cambiar de jugador
   const changePlayer = () => {
-    updateScores();
-    setActivePlayer(activePlayer === 0 ? 1 : 0);
+    setCurrentScore(0); // Resetea la puntuación actual
+    setActivePlayer((prevPlayer) => (prevPlayer === 0 ? 1 : 0)); // Cambia de jugador
   };
 
-  // Función para acumular la puntuación actual en la puntuación total
-  const updateScores = () => {
-    setScore((prev) => {
-      const newScores = [...prev];
-      newScores[activePlayer] += currentScore[activePlayer]; // Añado la puntuación actual al total
-      return newScores;
-    });
-    setCurrentScore([0, 0]); // Reinicia la puntuación actual después de guardar
-  };
-
-  // Función para guardar la puntuación actual sin cambiar de jugador (al presionar "Hold")
-  const holdScore = () => {
-    updateScores();
-    if (score[activePlayer] + currentScore[activePlayer] >= 100) {
-      setGameOver(true); // Detiene el juego si la puntuación total llega a 100
-      document
-        .querySelector(`.player--${activePlayer}`)
-        .classList.add("player--winner"); // Marca al jugador como ganador
-    } else {
-      changePlayer(); // Cambia al siguiente jugador
-    }
+  // Función para resetear el juego
+  const resetGame = () => {
+    setScores([0, 0]); // Resetea las puntuaciones de los jugadores
+    setCurrentScore(0); // Resetea la puntuación del turno
+    setActivePlayer(0); // Vuelve a ser el turno del jugador 1
+    setIsPlaying(true); // El juego empieza de nuevo
   };
 
   return (
-    <main>
-      <Player
-        playerId={0}
-        score={score[0]}
-        currentScore={currentScore[0]}
-        isActive={activePlayer === 0}
-      />
-
-      <img
-        src={`dice-${diceRoll || 5}.png`}
-        alt="Playing dice"
-        className={diceRoll ? "dice" : "hidden"}
-      />
-
-      <Player
-        playerId={1}
-        score={score[1]}
-        currentScore={currentScore[1]}
-        isActive={activePlayer === 1}
-      />
-
-      <div>
-        <button onClick={initData} className="btn btn--new">
-          🔄 New game
-        </button>
-        <button onClick={throwDice} className="btn btn--roll">
-          🎲 Roll dice
-        </button>
-        <button onClick={holdScore} className="btn btn--hold">
-          📥 Hold
-        </button>
+    <div className="game">
+      <h1>Pig Game</h1>
+      <div className="players">
+        {/* Componente Player para el Jugador 1 */}
+        <Player
+          playerId={0}
+          name="Player 1"
+          score={scores[0]}
+          currentScore={currentScore}
+          isActive={activePlayer === 0} // Muestra si el jugador está activo
+          onRollDice={throwDice} // Función para tirar el dado
+          onHoldScore={holdScore} // Función para mantener la puntuación
+        />
+        {/* Componente Player para el Jugador 2 */}
+        <Player
+          playerId={1}
+          name="Player 2"
+          score={scores[1]}
+          currentScore={currentScore}
+          isActive={activePlayer === 1} // Muestra si el jugador está activo
+          onRollDice={throwDice} // Función para tirar el dado
+          onHoldScore={holdScore} // Función para mantener la puntuación
+        />
       </div>
-    </main>
+
+      {/* Botón para reiniciar el juego */}
+      <button onClick={resetGame} className="btn btn--new">
+        🔄 New Game
+      </button>
+    </div>
   );
-}
+};
 
 export default App;
