@@ -1,31 +1,49 @@
-# Proyecto Pig Game
+# 🎲 Pig Game React
 
-## Crear un fork del repositorio
+Una implementación moderna del clásico juego de dados "Pig Game" utilizando React y Vite.
 
-## Clonar el proyecto
+## 🎮 Demo en vivo
 
-git clone <url-del-repositorio>
+Puedes jugar al juego en: [https://carmendmv.github.io/pig-game-react/](https://carmendmv.github.io/pig-game-react/)
 
-## Añadir el proyecto dentro de gitKraken
+## 📜 Reglas del juego
 
-## Abrir la carpeta del proyecto dentro de Visual Code y con su terminal (¡Dentro del proyecto!) ejecutar:
+1. El juego tiene 2 jugadores, jugando por turnos
+2. En cada turno, un jugador tira un dado todas las veces que quiera. Cada resultado se suma a su puntuación ACTUAL
+3. Pero, si el jugador saca un 1, toda su puntuación ACTUAL se pierde. Después de esto, es el turno del siguiente jugador
+4. El jugador puede elegir 'Hold', lo que significa que su puntuación ACTUAL se añade a su puntuación TOTAL. Después de esto, es el turno del siguiente jugador
+5. El primer jugador en alcanzar 100 puntos en la puntuación TOTAL gana el juego
 
-npx create-vite@latest .
+## 🚀 Tecnologías utilizadas
+
+- React 18
+- Vite
+- CSS Moderno (Grid, Flexbox)
+- GitHub Pages para el despliegue
+
+## 💻 Desarrollo local
+
+1. Clona el repositorio
+```bash
+git clone https://github.com/carmendmv/pig-game-react.git
+```
+
+2. Instala las dependencias
+```bash
+cd pig-game-react
 npm install
+```
 
-## No es necesario configurar el repositorio remoto
+3. Inicia el servidor de desarrollo
+```bash
+npm run dev
+```
 
-## Tareas
+## 🛠️ Scripts disponibles
 
-### Integramos index.html y los datos dentro de la estructura de vite
+- `npm run dev`: Inicia el servidor de desarrollo
+- `npm run build`: Crea una versión optimizada para producción
+- `npm run preview`: Vista previa de la versión de producción
+- `npm run deploy`: Despliega la aplicación en GitHub Pages
 
-### Gestionar el repositorio en GitHub y hacer un mínimo de 5 commits y que sean públicos
 
-### Publicar el repo usando gh-pages
-
-https://carmendmv.github.io/pig-game/
-
-# para publicar la página he utilizado los siguientes comenados en la terminar de VS Code
-
-1. `npm i -D gh-pages`
-2. `npm run deploy`
