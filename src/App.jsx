@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Player from "./Player";
 import "./style.css";
 
@@ -81,7 +81,7 @@ function App() {
   };
 
   return (
-    <>
+    <main>
       {/* Componente Player para el Jugador 1 */}
       <Player
         id={0}
@@ -91,7 +91,7 @@ function App() {
         isActive={activePlayer === 0} // Indicar si el jugador 1 es el jugador activo
         isWinner={score[0] >= WINNING_SCORE} // Indicar si el jugador 1 ha ganado
       />
-      
+
       {/* Componente Player para el Jugador 2 */}
       <Player
         id={1}
@@ -133,7 +133,7 @@ function App() {
       >
         📥 Hold
       </button>
-    </>
+    </main>
   );
 }
 
